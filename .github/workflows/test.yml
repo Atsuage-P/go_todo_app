@@ -1,0 +1,23 @@
+on:
+  push:
+    branches:
+      - "main"
+  pull_request:
+
+name: CI
+jobs:
+  unit-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      # NOTE: https://github.com/actions/setup-go
+      - uses: actions/setup-go@v3
+        with:
+          go-version: 1.19
+
+      - run: go test ./... -coverprofile=coverage.out
+
+      # NOTE: https://github.com/k1LoW/octocov-action
+      - name: report coverage
+        uses: k1LoW/octocov-action@v0
