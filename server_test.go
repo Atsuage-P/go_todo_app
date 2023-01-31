@@ -22,9 +22,8 @@ func TestServer_Run(t *testing.T) {
 		fmt.Fprintf(w, "Hello, %s!", r.URL.Path[1:])
 	})
 
-
 	eg.Go(func() error {
-		s :=NewServer(l, mux)
+		s := NewServer(l, mux)
 		return s.Run(ctx)
 	})
 
