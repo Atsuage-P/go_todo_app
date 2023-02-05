@@ -12,7 +12,7 @@ import (
 )
 
 type AddTask struct {
-	Store *store.TaskStore
+	Store     *store.TaskStore
 	Validator *validator.Validate
 }
 
@@ -27,8 +27,7 @@ func (at *AddTask) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}, http.StatusInternalServerError)
 		return
 	}
-
-	err := at.Validator.Struct(b)
+	err := validator.New().Struct(b)
 	if err != nil {
 		RespondJSON(ctx, w, &ErrResponse{
 			Message: err.Error(),
@@ -37,18 +36,17 @@ func (at *AddTask) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	t := &entity.Task{
-		Title: b.Title,
-		Status: entity.TaskStatusTodo,
+		Title:   b.Title,
+		Status:  "todo",
 		Created: time.Now(),
 	}
-	id ,err := store.Tasks.Add(t)
+	id, err := at.Store.Add(t)
 	if err != nil {
 		RespondJSON(ctx, w, &ErrResponse{
 			Message: err.Error(),
 		}, http.StatusInternalServerError)
 		return
 	}
-
 	rsp := struct {
 		ID entity.TaskID `json:"id"`
 	}{ID: id}

@@ -13,28 +13,26 @@ import (
 )
 
 func TestAddTask(t *testing.T) {
-	t.Parallel()
 	type want struct {
-		status int
+		status  int
 		rspFile string
 	}
-
 	tests := map[string]struct {
 		reqFile string
-		want want
-	} {
+		want    want
+	}{
 		"ok": {
 			reqFile: "testdata/add_task/ok_req.json.golden",
 			want: want{
-				status: http.StatusOK,
+				status:  http.StatusOK,
 				rspFile: "testdata/add_task/ok_rsp.json.golden",
 			},
 		},
 		"badRequest": {
 			reqFile: "testdata/add_task/bad_req.json.golden",
 			want: want{
-				status: http.StatusBadRequest,
-				rspFile: "testdata/add_task/bad_req_rsp.json.golden",
+				status:  http.StatusBadRequest,
+				rspFile: "testdata/add_task/bad_rsp.json.golden",
 			},
 		},
 	}
@@ -50,16 +48,15 @@ func TestAddTask(t *testing.T) {
 				bytes.NewReader(testutil.LoadFile(t, tt.reqFile)),
 			)
 
-			sut := AddTask{
-				Store: &store.TaskStore{
-					Tasks: map[entity.TaskID]*entity.Task{},
-				},
-				Validator: validator.New(),
-			}
+			sut := AddTask{Store: &store.TaskStore{
+				Tasks: map[entity.TaskID]*entity.Task{},
+			}, Validator: validator.New()}
 			sut.ServeHTTP(w, r)
 
 			resp := w.Result()
-			testutil.AssertResponse(t, resp, tt.want.status, testutil.LoadFile(t, tt.want.rspFile))
+			testutil.AssertResponse(t,
+				resp, tt.want.status, testutil.LoadFile(t, tt.want.rspFile),
+			)
 		})
 	}
 }
