@@ -13,3 +13,21 @@ services:
       - .:/app
     ports:
       - 8080:8080
+
+  todo-db:
+    image: mysql:8.0
+    container_name: todo-db
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_USER: todo
+      MYSQL_PASSWORD: todo
+      MYSQL_DATABASE: todo
+    volumes:
+      - todo-db-data:/var/lib/mysql
+      - ./_tools/mysql/init.d:/docker-entrypoint-initdb.d
+      - ./_tools/mysql/conf.d:/etc/mysql/conf.d:cached
+    ports:
+      - 3306:3306
+
+volumes:
+  todo-db-data:
