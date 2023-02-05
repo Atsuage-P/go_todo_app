@@ -1,4 +1,5 @@
 name: golang-ci
+run-name: golang-ci
 on:
   pull_request:
     paths:
